@@ -2,7 +2,11 @@
 {
     internal static class Tokens
     {
-        public const string agilePrefix = "<style=cIsUtility>Agile.</style>";
+        public const string agilePrefix = "<style=cIsUtility>Agile. </style>";
+        public const string ignitePrefix = "<style=cIsDamage>Ignite. </style>"; // See Artificer about this setup
+        public const string weakenPrefix = "<style=cIsDamage>Weaken. </style>"; // See REX about this setup
+        public const string shockingPrefix = "<style=cIsDamage>Shocking. </style>"; // See Captain about this setup
+        public const string variablePrefix = "<style=cIsDamage>Variable. </style>"; // Deals a random status between a pool, intended for future alt special
 
         public static string DamageText(string text)
         {

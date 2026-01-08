@@ -4,10 +4,19 @@ namespace BombardierMod.Survivors.Bombardier
 {
     public static class BombardierStaticValues
     {
-        public const float swordDamageCoefficient = 2.8f;
+        // Passive
+        public const float survivorDebuffPassiveCoefficient = 0.3f;
 
-        public const float gunDamageCoefficient = 4.2f;
+        // Primary
+        public const float swordDamageCoefficient = 0.5f;
+        public const float vaporizerChargedDamageCoefficient = 3.8f;
 
-        public const float bombDamageCoefficient = 16f;
+        // Secondary
+        public const float gunDamageCoefficient = 6f;
+        public const float spreadMiniDamageCoefficient = 1.2f;
+
+        // Special
+        public const float bombDamageCoefficient = 0.5f;
+        public const float vacuumFinishDamageCoefficient = 10f;
     }
 }

@@ -147,7 +147,7 @@ namespace BombardierMod.Survivors.Bombardier
             //remove the genericskills from the commando body we cloned
             Skills.ClearGenericSkills(bodyPrefab);
             //add our own
-            //AddPassiveSkill();
+            AddPassiveSkill();
             AddPrimarySkills();
             AddSecondarySkills();
             AddUtiitySkills();
@@ -159,6 +159,7 @@ namespace BombardierMod.Survivors.Bombardier
         private void AddPassiveSkill()
         {
             //option 1. fake passive icon just to describe functionality we will implement elsewhere
+            /* For Reference
             bodyPrefab.GetComponent<SkillLocator>().passiveSkill = new SkillLocator.PassiveSkill
             {
                 enabled = true,
@@ -167,6 +168,7 @@ namespace BombardierMod.Survivors.Bombardier
                 keywordToken = "KEYWORD_STUNNING",
                 icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
             };
+            */
 
             //option 2. a new SkillFamily for a passive, used if you want multiple selectable passives
             GenericSkill passiveGenericSkill = Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
@@ -175,7 +177,6 @@ namespace BombardierMod.Survivors.Bombardier
                 skillName = "BombardierPassive",
                 skillNameToken = Bombardier_PREFIX + "PASSIVE_NAME",
                 skillDescriptionToken = Bombardier_PREFIX + "PASSIVE_DESCRIPTION",
-                keywordTokens = new string[] { "KEYWORD_AGILE" },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
 
                 //unless you're somehow activating your passive like a skill, none of the following is needed.
@@ -216,11 +217,13 @@ namespace BombardierMod.Survivors.Bombardier
             //it is also a SteppedSkillDef. Custom Skilldefs are very useful for custom behaviors related to casting a skill. see ror2's different skilldefs for reference
             SteppedSkillDef primarySkillDef1 = Skills.CreateSkillDef<SteppedSkillDef>(new SkillDefInfo
                 (
-                    "BombardierSlash",
+                    // These are sync'd originally from Henry's secondary
+                    // Change the conventions to a Primary when you build it more out since ya want a gun-like primary attack
+                    "BombardierGun",
                     Bombardier_PREFIX + "PRIMARY_SLASH_NAME",
                     Bombardier_PREFIX + "PRIMARY_SLASH_DESCRIPTION",
-                    assetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
-                    new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashCombo)),
+                    assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
+                    new EntityStates.SerializableEntityStateType(typeof(SkillStates.Shoot)),
                     "Weapon",
                     true
                 ));
@@ -238,17 +241,16 @@ namespace BombardierMod.Survivors.Bombardier
             //here is a basic skill def with all fields accounted for
             SkillDef secondarySkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = "BombardierGun",
+                skillName = "BombardierBomb",
                 skillNameToken = Bombardier_PREFIX + "SECONDARY_GUN_NAME",
                 skillDescriptionToken = Bombardier_PREFIX + "SECONDARY_GUN_DESCRIPTION",
-                keywordTokens = new string[] { "KEYWORD_AGILE" },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
+                skillIcon = assetBundle.LoadAsset<Sprite>("texSpecialIcon"),
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Shoot)),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb)),
                 activationStateMachineName = "Weapon2",
                 interruptPriority = EntityStates.InterruptPriority.Skill,
 
-                baseRechargeInterval = 1f,
+                baseRechargeInterval = 4f,
                 baseMaxStock = 1,
 
                 rechargeStock = 1,
@@ -265,7 +267,6 @@ namespace BombardierMod.Survivors.Bombardier
                 canceledFromSprinting = false,
                 cancelSprintingOnActivation = false,
                 forceSprintDuringState = false,
-
             });
 
             Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef1);
@@ -281,13 +282,14 @@ namespace BombardierMod.Survivors.Bombardier
                 skillName = "BombardierRoll",
                 skillNameToken = Bombardier_PREFIX + "UTILITY_ROLL_NAME",
                 skillDescriptionToken = Bombardier_PREFIX + "UTILITY_ROLL_DESCRIPTION",
+                keywordTokens = new string[] { "KEYWORD_IGNITE" },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texUtilityIcon"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Roll)),
                 activationStateMachineName = "Body",
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
-                baseRechargeInterval = 4f,
+                baseRechargeInterval = 6f,
                 baseMaxStock = 1,
 
                 rechargeStock = 1,
@@ -319,6 +321,7 @@ namespace BombardierMod.Survivors.Bombardier
                 skillName = "BombardierBomb",
                 skillNameToken = Bombardier_PREFIX + "SPECIAL_BOMB_NAME",
                 skillDescriptionToken = Bombardier_PREFIX + "SPECIAL_BOMB_DESCRIPTION",
+                keywordTokens = new string[] { "KEYWORD_SHOCKING" },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texSpecialIcon"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb)),

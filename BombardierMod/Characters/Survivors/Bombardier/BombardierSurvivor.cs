@@ -1,8 +1,10 @@
 ﻿using BepInEx.Configuration;
+using BombardierMod.Characters.Survivors.Bombardier.Content;
 using BombardierMod.Modules;
 using BombardierMod.Modules.Characters;
 using BombardierMod.Survivors.Bombardier.Components;
 using BombardierMod.Survivors.Bombardier.SkillStates;
+using R2API;
 using RoR2;
 using RoR2.Skills;
 using System;
@@ -101,6 +103,7 @@ namespace BombardierMod.Survivors.Bombardier
 
             BombardierAssets.Init(assetBundle);
             BombardierBuffs.Init(assetBundle);
+            BombardierDamageTypes.Init();
 
             InitializeEntityStateMachines();
             InitializeSkills();
@@ -429,6 +432,22 @@ namespace BombardierMod.Survivors.Bombardier
         private void AddHooks()
         {
             R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
+            On.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
+        }
+
+        private void GlobalEventManager_OnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
+        {
+            orig(self, damageInfo, victim);
+
+            if (damageInfo.attacker && DamageAPI.HasModdedDamageType(damageInfo, BombardierDamageTypes.VaporizerPrimed))
+            {
+                CharacterBody victimBody = victim ? victim.GetComponent<CharacterBody>() : null;
+                if (victimBody)
+                {
+                    victimBody.AddTimedBuff(BombardierBuffs.vaporizerPrimed, 60f);
+                    //Log.Info($"Primed {victimBody.GetDisplayName()}, total stacks: {victimBody.GetBuffCount(BombardierBuffs.vaporizerPrimed)}");
+                }
+            }
         }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, R2API.RecalculateStatsAPI.StatHookEventArgs args)

@@ -1,7 +1,18 @@
-﻿using EntityStates;
+﻿using BombardierMod.Characters.Survivors.Bombardier.Content;
+using BombardierMod.Characters.Survivors.Bombardier.SkillStates;
 using BombardierMod.Survivors.Bombardier;
+using EntityStates;
+using R2API;
 using RoR2;
 using UnityEngine;
+
+/* Primary 1: Vaporizer
+ * Player shoots a "VaporizerOrb" projectile that sticks to the enemy hit by it, inflicting the "Primed" effect.
+ * When the player charges the attack, they instead shoot a "VaporizerDetonator" projectile. If the enemy hit by
+ * the detonator projectile, all stacks of "Primed" are removed and the enemy is hit by an explosion whose damage
+ * is scaled based on the number of "Primed" stacks it has. If the enemy is hit by the explosion and also has
+ * primed stacks on them, they will also explode accordingly.
+ */
 
 namespace BombardierMod.Survivors.Bombardier.SkillStates
 {
@@ -9,12 +20,13 @@ namespace BombardierMod.Survivors.Bombardier.SkillStates
     {
         public static float damageCoefficient = BombardierStaticValues.gunDamageCoefficient;
         public static float procCoefficient = 1f;
-        public static float baseDuration = 0.6f;
-        //delay on firing is usually ass-feeling. only set this if you know what you're doing
+        public static float baseDuration = 0.5f;
+        // Only edit fire delay if you know what you're doing
         public static float firePercentTime = 0.0f;
         public static float force = 800f;
         public static float recoil = 1f;
         public static float range = 256f;
+        public static float chargeTransitionTime = 0.2f;
         public static GameObject tracerEffectPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerGoldGat");
 
         private float duration;
@@ -42,9 +54,15 @@ namespace BombardierMod.Survivors.Bombardier.SkillStates
         {
             base.FixedUpdate();
 
-            if (fixedAge >= fireTime)
+            if (fixedAge >= fireTime && !hasFired)
             {
                 Fire();
+            }
+
+            if (hasFired && isAuthority && inputBank && inputBank.skill1.down)
+            {
+                outer.SetNextState(new ShootCharged());
+                return;
             }
 
             if (fixedAge >= duration && isAuthority)
@@ -76,7 +94,7 @@ namespace BombardierMod.Survivors.Bombardier.SkillStates
                         origin = aimRay.origin,
                         damage = damageCoefficient * damageStat,
                         damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageTypeCombo.GenericSecondary,
+                        damageType = DamageTypeCombo.GenericPrimary,
                         falloffModel = BulletAttack.FalloffModel.None,
                         maxDistance = range,
                         force = force,
@@ -98,6 +116,13 @@ namespace BombardierMod.Survivors.Bombardier.SkillStates
                         spreadYawScale = 1f,
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
+                        modifyOutgoingDamageCallback = (BulletAttack bulletAttack, ref BulletAttack.BulletHit hitInfo, DamageInfo damageInfo) =>
+                        {
+                            if (damageInfo != null)
+                            {
+                                DamageAPI.AddModdedDamageType(damageInfo, BombardierDamageTypes.VaporizerPrimed);
+                            }
+                        }
                     }.Fire();
                 }
             }

@@ -12,7 +12,7 @@ namespace BombardierMod.Survivors.Bombardier
         public const float vaporizerChargedDamageCoefficient = 3.8f;
 
         // Secondary
-        public const float gunDamageCoefficient = 6f;
+        public const float gunDamageCoefficient = 0.2f;
         public const float spreadMiniDamageCoefficient = 1.2f;
 
         // Special

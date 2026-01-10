@@ -1,11 +1,14 @@
-﻿using System;
-using BombardierMod.Modules;
+﻿using BombardierMod.Modules;
 using BombardierMod.Survivors.Bombardier.Achievements;
+using R2API;
+using System;
 
 namespace BombardierMod.Survivors.Bombardier
 {
     public static class BombardierTokens
     {
+        public const string KEYWORD_PRIMED = Tokens.primedPrefix + "Marks an enemy for detonation. Blast damage is based on the number of prime stacks present on the enemy.";
+
         public static void Init()
         {
             AddBombardierTokens();
@@ -35,6 +38,7 @@ namespace BombardierMod.Survivors.Bombardier
             Language.Add(prefix + "LORE", "sample lore");
             Language.Add(prefix + "OUTRO_FLAVOR", outro);
             Language.Add(prefix + "OUTRO_FAILURE", outroFailure);
+            LanguageAPI.Add("KEYWORD_PRIMED", KEYWORD_PRIMED);
 
             #region Skins
             Language.Add(prefix + "MASTERY_SKIN_NAME", "Grave Bomber");
@@ -47,8 +51,8 @@ namespace BombardierMod.Survivors.Bombardier
 
             #region Primary
             Language.Add(prefix + "PRIMARY_SLASH_NAME", "Vaporizer"); // Remember to readjust values, there's 2 here
-            Language.Add(prefix + "PRIMARY_SLASH_DESCRIPTION", $"Fire your arm cannon for <style=cIsDamage>{100f * BombardierStaticValues.swordDamageCoefficient}% damage</style> and sticks to the enemy struck. " + 
-                                                               $"Charging the attack allows you to detonate these shots for <style=cIsDamage>{100f * BombardierStaticValues.vaporizerChargedDamageCoefficient}% damage</style>.");
+            Language.Add(prefix + "PRIMARY_SLASH_DESCRIPTION", Tokens.primedPrefix + $"Fire your arm cannon for <style=cIsDamage>{100f * BombardierStaticValues.swordDamageCoefficient}% damage</style> and inflicts <style=cIsDamage>primed</style> " +
+                                                               $"to the enemy struck. Charging the attack allows you to detonate targets afflicted by <style=cIsDamage>primed</style>.");
             #endregion
 
             #region Secondary

@@ -24,9 +24,10 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="BepInEx.Core" Version="5.*" />
+		<PackageReference Include="R2API.DamageType" Version="1.1.7" />
 		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.1-r.0" />
 		<PackageReference Include="UnityEngine.Modules" Version="2021.3.33" />
-		<PackageReference Include="MMHOOK.RoR2" Version="2025.11.19">
+		<PackageReference Include="MMHOOK.RoR2" Version="2025.12.9">
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
 		<PackageReference Include="R2API.Core" Version="5.*" />
@@ -34,6 +35,12 @@
 		<PackageReference Include="R2API.RecalculateStats" Version="1.*" />
 		<PackageReference Include="R2API.Language" Version="1.*" />
 		<PackageReference Include="R2API.Sound" Version="1.*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="R2API.Core">
+	    <HintPath>..\..\..\..\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\BomberGuySurvivor\BepInEx\plugins\RiskofThunder-R2API_Core\R2API.Core\R2API.Core.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if &quot;$(Username)&quot; == &quot;kylos&quot; set build=true&#xD;&#xA;&#xD;&#xA;if defined build (&#xD;&#xA;&#xD;&#xA;REM copy the built mod to our Build folder&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Build\plugins&quot;&#xD;&#xA;&#xD;&#xA;if exist &quot;$(ProjectDir)..\BombardierUnityProject\AssetBundles\bombardierassetbundle&quot; (&#xD;&#xA;copy &quot;$(ProjectDir)..\BombardierUnityProject\AssetBundles\bombardierassetbundle&quot; &quot;$(ProjectDir)..\Build\plugins\AssetBundles&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;Xcopy /E /I /Y &quot;$(ProjectDir)..\Build\plugins&quot; &quot;%25APPDATA%25\r2modmanPlus-local\RiskOfRain2\profiles\BomberGuySurvivor\BepInEx\plugins\ShandoVK-Bombardier\&quot;&#xD;&#xA;)&#xD;&#xA;" />
